@@ -11,7 +11,7 @@ import json
 class Chatbot:
     def __init__(self):
         self.system = "You are a hotel host chatbot. Your answers are short and restricted to the exact informantion that you need to know."
-        self.ner = "You are a text extractor program. Your answer will be stored in a database, so you need to answer only the exact word that is asked."
+        self.ner = "You are a text extractor program. Your answer will be stored in a database, so you need to answer only the exact word that is asked, only one string in the answer."
         self.question_dict = {
             'name': {
                 'prompt': f'{self.system} The client just started the conversation. Elaborate a question to know the name of your interlocutor',
@@ -71,6 +71,7 @@ class Chatbot:
         self.prompt = None
         self.next_question = None
         self.next_step = None
+        self.answers = None
 
     def get_next_question(self):
         for key in self.question_dict:
@@ -94,3 +95,10 @@ class Chatbot:
 
     def save_on_memory(self, field, value):
         self.question_dict[field]['value'] = value
+
+
+    def get_answers(self):
+        answers = {}
+        for key in self.question_dict:
+            answers[key] = self.question_dict[key]['value']
+        self.answers = answers
