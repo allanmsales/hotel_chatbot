@@ -1,4 +1,5 @@
 from entity.chatbot import Chatbot
+from entity.database import Database
 from langchain_community.llms import Ollama
 from langchain_core.output_parsers import StrOutputParser
 llm = Ollama(model="llama2")
@@ -16,5 +17,8 @@ def chatbot_interface(input):
     chain = chatbot.prompt | llm | output_parser
     question = chain.invoke({"input": f"What else you need to know from me?"})
     chatbot.get_answers()
-    print(chatbot.answers)
+    print(chatbot.next_step)
+    if chatbot.next_step == 'finish':
+        database = Database(chatbot.answers)
+        database.save_data()
     return question

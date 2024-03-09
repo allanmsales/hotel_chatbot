@@ -79,6 +79,7 @@ class Chatbot:
                 self.next_step = key
                 self.next_question = self.question_dict[key]['prompt']
                 break
+            self.next_step = 'finish'
             self.next_question = self.question_dict['finish']['prompt']
 
     def switch_to_questions(self):
