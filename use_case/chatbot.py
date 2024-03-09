@@ -15,5 +15,6 @@ def chatbot_interface(input):
     chatbot.switch_to_questions()
     chain = chatbot.prompt | llm | output_parser
     question = chain.invoke({"input": f"What else you need to know from me?"})
-    print(chatbot.question_dict)
+    chatbot.get_answers()
+    print(chatbot.answers)
     return question
