@@ -3,3 +3,5 @@ langchain-experimental==0.0.53
 langchain-cli==0.0.21
 faiss-cpu==1.8.0
 beautifulsoup4==4.12.3
+fastapi==0.95.1
+gunicorn==20.1.0

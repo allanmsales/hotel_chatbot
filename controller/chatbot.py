@@ -1,12 +1,14 @@
-from use_case import question, ner
+from fastapi import APIRouter
+from use_case import chatbot
+import model
+
+router = APIRouter(
+    prefix="/chatbot",
+    tags=['CHATBOT']
+)
 
 
-def question_controller():
-    question.question("Hello")
-
-
-def ner_controller():
-    ner.ner("My name is Jhon")
-
-
-ner_controller()
+@router.post('/send_message')
+def chatbot_controller(data: model.Message):
+    return chatbot.chatbot_interface(data.message)
+    
