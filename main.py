@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from server.gunicorn_server import GunicornServer
 from controller import chatbot
 
@@ -7,6 +8,8 @@ app = FastAPI(
     version="1.0",
     description="Chatbot to book rooms in a Hotel."
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(chatbot.router)
 

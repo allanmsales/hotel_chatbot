@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>Hotel Chatbot</title>
+    </head>
+    <body>
+        {{ first_question }}<br>
+        <div id="history"></div>
+        <input id="prompt" name="name">
+        <button id="send">Send</button>
+    </body>
+    <script>
+        document.getElementById("send").addEventListener("click", function(){
+            document.getElementById("history").innerHTML += "<br>" + document.getElementById("prompt").value;
+            getAnswer(document.getElementById("prompt").value)
+            document.getElementById("prompt").value = '';
+            
+        });
+
+        function getAnswer(message) {
+            fetch("http://localhost:8080/chatbot/send_message",
+                    {
+                        method: "POST",
+                        body: JSON.stringify({"message": message}),
+                        headers: {"Content-type": "application/json; charset=UTF-8"}
+                    }
+                )
+                .then((response) => response.json())
+                .then((response) => {
+                    document.getElementById("history").innerHTML += "<br>" + response
+                });
+        }
+    </script>
+</html>
