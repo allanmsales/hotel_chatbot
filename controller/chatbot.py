@@ -19,6 +19,6 @@ def chatbot_controller(data: model.Message):
 
 @router.get('/front', response_class=HTMLResponse)
 async def chatbot_front_controller(request: Request):
-    first_question = "Hello! It's pleasure to talk to you. I'll help you with your booking process. Could you please tell me your name?"
+    first_question = "Hello! It's a pleasure to talk to you. I'll help you with your booking process. Could you please tell me your name?"
     return templates.TemplateResponse("chatbot.html", {"request": request, "first_question": first_question})
     
