@@ -8,6 +8,19 @@ from langchain.chains import create_retrieval_chain
 from langchain_core.documents import Document
 import json
 
+from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.embeddings import OllamaEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_community.llms import Ollama
+from langchain.chains import create_retrieval_chain
+from langchain.chains import create_history_aware_retriever
+from langchain_core.prompts import MessagesPlaceholder
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.documents import Document
+
 class Chatbot:
     def __init__(self):
         self.system = "You are a hotel host chatbot. Your answers are short and restricted to the exact informantion that you need to know."
@@ -72,6 +85,10 @@ class Chatbot:
         self.next_question = None
         self.next_step = None
         self.answers = None
+        self.chat_history = [
+            HumanMessage(content="Hi, I want to book a room."),
+            AIMessage(content="Sure! Can you tell me your name, please?")
+            ]
 
     def get_next_question(self):
         for key in self.question_dict:
@@ -83,9 +100,28 @@ class Chatbot:
             self.next_question = self.question_dict['finish']['prompt']
 
     def switch_to_questions(self):
+        llm = Ollama(model="llama2")
+        embeddings = OllamaEmbeddings()
+        text_splitter = RecursiveCharacterTextSplitter()
+
+        info = [Document(page_content="Our price is $100 per night. There are 3 types of rooms: BASIC, MEDIUM and BIG. The breakfast is served until 9:00 am.")]
+
+        documents = text_splitter.split_documents(info)
+        vector = FAISS.from_documents(documents, embeddings)
+        retriever = vector.as_retriever()
+
+        prompt = ChatPromptTemplate.from_messages([
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("user", "{input}"),
+            ("user", "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation")
+        ])
+
+        self.retriever_chain = create_history_aware_retriever(llm, retriever, prompt)
+
         self.prompt = ChatPromptTemplate.from_messages([
-            ("system", f"{self.next_question}"),
-            ("user", "{input}")
+            ("system", self.next_question + "Answer the user's questions based on the below context:\n\n{context}"),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("user", "{input}"),
         ])
 
     def switch_to_ner(self, key):
