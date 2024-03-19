@@ -89,6 +89,7 @@ class Chatbot:
             HumanMessage(content="Hi, I want to book a room."),
             AIMessage(content="Sure! Can you tell me your name, please?")
             ]
+        self.retrieval_chain = None
 
     def get_next_question(self):
         for key in self.question_dict:
@@ -104,7 +105,10 @@ class Chatbot:
         embeddings = OllamaEmbeddings()
         text_splitter = RecursiveCharacterTextSplitter()
 
-        info = [Document(page_content="Our price is $100 per night. There are 3 types of rooms: BASIC, MEDIUM and BIG. The breakfast is served until 9:00 am.")]
+        info = [Document(page_content="""
+        Follow exactely the previous statment.
+        The Hotel is located at California, and has a beautiful swimming pull.
+        """)]
 
         documents = text_splitter.split_documents(info)
         vector = FAISS.from_documents(documents, embeddings)
@@ -119,7 +123,7 @@ class Chatbot:
         self.retriever_chain = create_history_aware_retriever(llm, retriever, prompt)
 
         self.prompt = ChatPromptTemplate.from_messages([
-            ("system", self.next_question + "Answer the user's questions based on the below context:\n\n{context}"),
+            ("system", self.next_question + "You must follow the previous instructions and use the history only in cases that is extremely necessary:\n\n{context}"),
             MessagesPlaceholder(variable_name="chat_history"),
             ("user", "{input}"),
         ])
