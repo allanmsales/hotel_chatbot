@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Request
-from use_case import chatbot
-import model
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from use_case import chatbot
+import model
+
 
 templates = Jinja2Templates(directory="templates")
 
