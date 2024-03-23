@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from use_case import chatbot
@@ -15,6 +15,20 @@ router = APIRouter(
 
 @router.post('/send_message')
 def chatbot_controller(data: model.Message):
+    """Receives a message and returns a response
+
+    Body
+    ----------
+    message : str
+    
+    The message from the client
+
+    Returns
+    -------
+    str
+    
+    The AI response for the last message
+    """
     return chatbot.chatbot_interface(data.message)
 
 
