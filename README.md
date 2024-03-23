@@ -20,3 +20,9 @@ Chatbot for a hotel
 
 # Start Chatbot:
 - $ python3 main.py
+
+# Try it out:
+- http://localhost:8080/chatbot/front
+
+# Docs:
+- http://localhost:8080/docs

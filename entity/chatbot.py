@@ -7,8 +7,6 @@ from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import create_history_aware_retriever
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
 
 
 class Chatbot:
@@ -31,9 +29,9 @@ class Chatbot:
                 'ner': f'{self.ner} Extract the date in the input and transform in the yyyy-mm-dd format',
                 'value': None
                 },
-            'guesses': {
-                'prompt': f'{self.system} Elaborate a short question to know the number of guesses',
-                'ner': f'{self.ner} Extract the number of guesses indicated by the input',
+            'guests': {
+                'prompt': f'{self.system} Elaborate a short question to know the number of guests',
+                'ner': f'{self.ner} Extract the number of guests indicated by the input',
                 'value': None
             },
             'room': {
